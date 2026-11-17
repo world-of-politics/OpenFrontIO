@@ -426,16 +426,16 @@ export class ControlPanel extends LitElement implements Controller {
     return html`
       <div
         class="w-full h-6 border ${
-          this._lowTroopsAlert ? "border-red-500" : "border-gray-600"
-        } rounded-md bg-gray-900/60 overflow-hidden relative"
+          this._lowTroopsAlert ? "border-red-500" : "border-gold/30"
+        } rounded-md bg-black/40 overflow-hidden relative"
       >
         <div class="relative h-full">
           <div
-            class="absolute inset-y-0 left-0 w-full origin-left bg-malibu-blue transition-transform duration-200 ease-out"
+            class="absolute inset-y-0 left-0 w-full origin-left bg-gold transition-transform duration-200 ease-out"
             style="transform: scaleX(${greenPercent / 100});"
           ></div>
           <div
-            class="absolute inset-y-0 left-0 w-full origin-left bg-aquarius transition-transform duration-200 ease-out"
+            class="absolute inset-y-0 left-0 w-full origin-left bg-teal-accent transition-transform duration-200 ease-out"
             style="transform: translateX(${greenPercent}%) scaleX(${
               orangePercent / 100
             });"
@@ -495,16 +495,16 @@ export class ControlPanel extends LitElement implements Controller {
     return html`
       <div
         class="w-full h-6 border ${
-          this._lowTroopsAlert ? "border-red-500" : "border-gray-600"
-        } rounded-md bg-gray-900/60 overflow-hidden relative"
+          this._lowTroopsAlert ? "border-red-500" : "border-gold/30"
+        } rounded-md bg-black/40 overflow-hidden relative"
       >
         <div class="relative h-full">
           <div
-            class="absolute inset-y-0 left-0 w-full origin-left bg-malibu-blue transition-transform duration-200 ease-out"
+            class="absolute inset-y-0 left-0 w-full origin-left bg-gold transition-transform duration-200 ease-out"
             style="transform: scaleX(${greenPercent / 100});"
           ></div>
           <div
-            class="absolute inset-y-0 left-0 w-full origin-left bg-aquarius transition-transform duration-200 ease-out"
+            class="absolute inset-y-0 left-0 w-full origin-left bg-teal-accent transition-transform duration-200 ease-out"
             style="transform: translateX(${greenPercent}%) scaleX(${
               orangePercent / 100
             });"
@@ -614,7 +614,7 @@ export class ControlPanel extends LitElement implements Controller {
         </div>
         <!-- Gold -->
         <div
-          class="flex items-center gap-1 shrink-0 border rounded-md border-yellow-400 font-bold text-yellow-400 text-sm py-0.5 px-1 min-w-[4.5rem] relative ${this.tutorialHighlightClass(
+          class="flex items-center gap-1 shrink-0 border rounded-md border-gold font-bold text-gold text-sm py-0.5 px-1 min-w-[4.5rem] relative ${this.tutorialHighlightClass(
             "gold",
           )}"
           translate="no"
@@ -642,7 +642,7 @@ export class ControlPanel extends LitElement implements Controller {
         translate="no"
       >
         <div
-          class="flex items-center gap-1 shrink-0 border border-gray-600 rounded-md px-1 py-0.5 text-sm font-bold text-white cursor-pointer w-[8rem]"
+          class="flex items-center gap-1 shrink-0 border border-gold/30 rounded-md px-1 py-0.5 text-sm font-bold text-white cursor-pointer w-[8rem]"
         >
           <img
             src=${swordIcon}
@@ -668,7 +668,7 @@ export class ControlPanel extends LitElement implements Controller {
           @pointerup=${(e: Event) => this.handleRatioSliderPointerUp(e)}
           @click=${(e: MouseEvent) => this.handleRatioSliderClick(e)}
           data-radial-click-through
-          class="flex-1 h-1.5 accent-aquarius cursor-pointer"
+          class="flex-1 h-1.5 accent-gold cursor-pointer"
         />
       </div>
     `;
@@ -695,7 +695,7 @@ export class ControlPanel extends LitElement implements Controller {
       <div class="flex gap-2 items-center">
         <!-- Gold -->
         <div
-          class="flex items-center justify-center p-1 gap-0.5 border rounded-md border-yellow-400 font-bold text-yellow-400 text-xs w-1/5 shrink-0 relative ${this.tutorialHighlightClass(
+          class="flex items-center justify-center p-1 gap-0.5 border rounded-md border-gold font-bold text-gold text-xs w-1/5 shrink-0 relative ${this.tutorialHighlightClass(
             "gold",
           )}"
           translate="no"
@@ -751,7 +751,7 @@ export class ControlPanel extends LitElement implements Controller {
             percent: (this.attackRatio * 100).toFixed(0),
           })}
           class="hidden side-bar:flex w-[4.25rem] shrink-0 items-center justify-center gap-1 border rounded-md p-1 ${
-            this._ratioPopupOpen ? "border-aquarius" : "border-gray-600"
+            this._ratioPopupOpen ? "border-gold" : "border-gold/30"
           } ${this.tutorialHighlightClass("attack_ratio")}"
           translate="no"
           @click=${() => (this._ratioPopupOpen = !this._ratioPopupOpen)}
@@ -773,7 +773,7 @@ export class ControlPanel extends LitElement implements Controller {
           this._ratioPopupOpen
             ? html`<div
                 data-ratio-popup
-                class="hidden side-bar:flex absolute bottom-full inset-x-2 mb-2 items-center gap-2 px-3 py-3 bg-gray-800/92 rounded-lg shadow-lg"
+                class="hidden side-bar:flex absolute bottom-full inset-x-2 mb-2 items-center gap-2 px-3 py-3 hud-panel rounded-lg shadow-lg"
                 translate="no"
               >
                 <img
@@ -804,7 +804,7 @@ export class ControlPanel extends LitElement implements Controller {
                   @pointerup=${(e: Event) => this.handleRatioSliderPointerUp(e)}
                   @click=${(e: MouseEvent) => this.handleRatioSliderClick(e)}
                   data-radial-click-through
-                  class="flex-1 min-w-0 h-1.5 accent-aquarius cursor-pointer"
+                  class="flex-1 min-w-0 h-1.5 accent-gold cursor-pointer"
                 />
               </div>`
             : nothing
@@ -824,7 +824,7 @@ export class ControlPanel extends LitElement implements Controller {
             @pointerup=${(e: Event) => this.handleRatioSliderPointerUp(e)}
             @click=${(e: MouseEvent) => this.handleRatioSliderClick(e)}
             data-radial-click-through
-            class="w-full h-1.5 accent-aquarius cursor-pointer"
+            class="w-full h-1.5 accent-gold cursor-pointer"
           />
         </div>
       </div>
