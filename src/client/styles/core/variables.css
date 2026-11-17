@@ -1,27 +1,28 @@
 :root {
-  --theme: "light";
+  --theme: "dark";
   --breakPoint-tablet: 800px;
   --breakPoint-Desktop: 1024px;
   --blur-md: 4px;
-  --boxBackgroundColor: #111827cc;
-  --fontColor: #202020;
+  /* TRY-IT reskin: dark navy + gold dashboard theme */
+  --boxBackgroundColor: #0f1626f2;
+  --fontColor: #e8ecf3;
   --fontColorLight: #fff;
 
-  --primaryColorHover: var(--color-malibu-blue);
+  --primaryColorHover: var(--color-gold);
   --primaryColorDisabled: linear-gradient(
     to right,
     rgb(74, 74, 74),
     rgb(61, 61, 61)
   );
-  --secondaryColor: var(--color-malibu-blue);
-  --secondaryColorHover: var(--color-aquarius);
+  --secondaryColor: var(--color-gold);
+  --secondaryColorHover: var(--color-gold-light);
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-  --primaryColorHoverDark: var(--color-malibu-blue);
+  --primaryColorHoverDark: var(--color-gold);
   --primaryColorDisabledDark: #4b5563;
-  --secondaryColorDark: var(--color-malibu-blue);
-  --secondaryColorHoverDark: var(--color-aquarius);
-  --fontColorDark: #f3f4f6;
+  --secondaryColorDark: var(--color-gold);
+  --secondaryColorHoverDark: var(--color-gold-light);
+  --fontColorDark: #e8ecf3;
 
   /* Achievements */
   --medal-easy: #cd7f32;
