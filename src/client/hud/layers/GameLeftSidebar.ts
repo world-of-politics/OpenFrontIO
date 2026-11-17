@@ -1,4 +1,9 @@
-import { GameMode, type Team } from "@openfront/engine-api/game/GameTypes";
+import {
+  GameMode,
+  GameType,
+  type Team,
+} from "@openfront/engine-api/game/GameTypes";
+import { renderTroops } from "@openfront/engine-lib/Format";
 import { assetUrl } from "@openfront/shared/AssetUrls";
 import type { EventBus } from "@openfront/shared/EventBus";
 import { Colord } from "colord";
@@ -14,6 +19,7 @@ import type { GameView } from "../../view";
 import { ImmunityBarVisibleEvent } from "./ImmunityTimer";
 import "./PlayerStats";
 import type { PlayerStats } from "./PlayerStats";
+import { ShowSettingsModalEvent } from "./SettingsModal";
 import { SpawnBarVisibleEvent } from "./SpawnTimer";
 import "./TeamStats";
 import type { TeamStats } from "./TeamStats";
@@ -43,6 +49,12 @@ export class GameLeftSidebar extends LitElement implements Controller {
   private immunityBarVisible = false;
   @state()
   private alternateView = false;
+  /** Current allies, for the Diplomasi section (read-only readout). */
+  @state()
+  private allies: string[] = [];
+  /** Outgoing attacks, for the Perang section (read-only readout). */
+  @state()
+  private attacks: { name: string; troops: number }[] = [];
 
   private playerColor: Colord = new Colord("#FFFFFF");
   @property({ attribute: false }) public game: GameView | null = null;
@@ -100,6 +112,25 @@ export class GameLeftSidebar extends LitElement implements Controller {
       this.isPlayerTeamLabelVisible = false;
     }
 
+    // Read-only section data: allies (Diplomasi) and outgoing attacks
+    // (Perang). Both come straight from the live game state.
+    const myPlayer = this.game.myPlayer();
+    if (myPlayer !== null) {
+      this.allies = myPlayer.allies().map((a) => a.name());
+      this.attacks = myPlayer.outgoingAttacks().map((attack) => {
+        let name = `#${attack.targetID}`;
+        try {
+          const target = this.game?.playerBySmallID(attack.targetID);
+          if (target !== undefined && "name" in target) {
+            name = (target as { name(): string }).name();
+          }
+        } catch {
+          // Target left or is otherwise unresolvable; keep the id fallback.
+        }
+        return { name, troops: attack.troops };
+      });
+    }
+
     this.playerStats?.refresh();
     this.teamStats?.refresh();
   }
@@ -120,122 +151,120 @@ export class GameLeftSidebar extends LitElement implements Controller {
     this.eventBus?.emit(new AlternateViewEvent(!this.alternateView));
   }
 
+  private openSettings(): void {
+    const isSinglePlayer =
+      this.game?.config()?.gameConfig()?.gameType === GameType.Singleplayer ||
+      this.game?.config()?.isReplay() === true;
+    this.eventBus?.emit(
+      new ShowSettingsModalEvent(true, isSinglePlayer, false),
+    );
+  }
+
   private get isTeamGame(): boolean {
     return this.game?.config().gameConfig().gameMode === GameMode.Team;
   }
 
   render() {
+    const toggleBtn = (active: boolean) =>
+      `cursor-pointer p-0.5 border rounded-md transition-colors ${
+        active
+          ? "bg-gold/20 border-gold"
+          : "bg-panel-2/80 hover:bg-panel-2 border-gold/25"
+      }`;
     return html`
       <aside
-        class=${`max-lg:fixed max-lg:top-0 max-lg:left-0 max-lg:z-900 lg:pointer-events-auto flex flex-col mt-(--bar-offset) max-h-[calc(100vh-80px)] overflow-y-auto p-2 bg-gray-800/92 backdrop-blur-sm shadow-xs rounded-br-lg ${this.isPlayerStatsShown || this.isTeamStatsShown ? "max-[400px]:w-full max-[400px]:rounded-none max-lg:mt-[calc(var(--bar-offset)+var(--game-health-offset,0px))] max-lg:max-h-[calc(100vh-80px-var(--game-health-offset,0px))]" : ""} transition-all duration-300 ease-out transform ${
+        class=${`hud-panel max-lg:fixed max-lg:top-0 max-lg:left-0 max-lg:z-900 lg:pointer-events-auto flex flex-col gap-3 mt-(--bar-offset) max-h-[calc(100vh-80px)] overflow-y-auto p-3 w-64 bg-panel/94 backdrop-blur-sm shadow-xs rounded-br-lg ${this.isPlayerStatsShown || this.isTeamStatsShown ? "max-[400px]:w-full max-[400px]:rounded-none max-lg:mt-[calc(var(--bar-offset)+var(--game-health-offset,0px))] max-lg:max-h-[calc(100vh-80px-var(--game-health-offset,0px))]" : ""} transition-all duration-300 ease-out transform ${
           this.isVisible ? "translate-x-0" : "hidden"
         }`}
         style="--bar-offset: ${this.barOffset}px;"
       >
-        <div class="flex items-center gap-4 xl:gap-6 text-white">
-          <div
-            class="cursor-pointer p-0.5 bg-gray-700/50 hover:bg-gray-600 border rounded-md border-slate-500 transition-colors"
+        <!-- PROFIL: player leaderboard -->
+        <section class="flex flex-col gap-1.5 min-w-0">
+          <h2 class="hud-section-title">Profil</h2>
+          <button
+            type="button"
+            class="flex items-center gap-2 w-full text-left text-ink text-xs font-semibold px-1 py-1 rounded-md hover:bg-white/5 transition-colors"
             @click=${this.togglePlayerStats}
-            role="button"
-            tabindex="0"
-            @keydown=${(e: KeyboardEvent) => {
-              if (e.key === "Enter" || e.key === " " || e.code === "Space") {
-                e.preventDefault();
-                this.togglePlayerStats();
-              }
-            }}
+            aria-pressed=${this.isPlayerStatsShown ? "true" : "false"}
           >
-            <img
-              src=${
-                this.isPlayerStatsShown
-                  ? playerStatsSolidIcon
-                  : playerStatsRegularIcon
-              }
-              alt=${
-                translateText("help_modal.icon_alt_player_leaderboard") ||
-                "Player Leaderboard Icon"
-              }
-              width="20"
-              height="20"
-            />
-          </div>
-          ${
-            this.isTeamGame
-              ? html`
-                  <div
-                    class="cursor-pointer p-0.5 bg-gray-700/50 hover:bg-gray-600 border rounded-md border-slate-500 transition-colors"
+            <span class=${toggleBtn(this.isPlayerStatsShown)}>
+              <img
+                src=${
+                  this.isPlayerStatsShown
+                    ? playerStatsSolidIcon
+                    : playerStatsRegularIcon
+                }
+                alt=${
+                  translateText("help_modal.icon_alt_player_leaderboard") ||
+                  "Player Leaderboard Icon"
+                }
+                width="20"
+                height="20"
+              />
+            </span>
+            Leaderboard
+            ${
+              this.isPlayerStatsShown || this.isTeamStatsShown
+                ? html`<span
+                    class="ml-auto text-[10px] text-muted select-all leading-none"
+                    title=${translateText("help_modal.game_id_tooltip")}
+                    >${this.game?.gameID() ?? ""}</span
+                  >`
+                : null
+            }
+          </button>
+          <player-stats
+            class=${this.isPlayerStatsShown ? "block min-w-0" : "hidden"}
+            .game=${this.game}
+            .eventBus=${this.eventBus}
+            .visible=${this.isPlayerStatsShown}
+          ></player-stats>
+        </section>
+
+        <!-- NEGARA: team leaderboard (team games only) -->
+        ${
+          this.isTeamGame
+            ? html`
+                <section class="flex flex-col gap-1.5 min-w-0">
+                  <h2 class="hud-section-title">Negara</h2>
+                  <button
+                    type="button"
+                    class="flex items-center gap-2 w-full text-left text-ink text-xs font-semibold px-1 py-1 rounded-md hover:bg-white/5 transition-colors"
                     @click=${this.toggleTeamStats}
-                    role="button"
-                    tabindex="0"
-                    @keydown=${(e: KeyboardEvent) => {
-                      if (
-                        e.key === "Enter" ||
-                        e.key === " " ||
-                        e.code === "Space"
-                      ) {
-                        e.preventDefault();
-                        this.toggleTeamStats();
-                      }
-                    }}
+                    aria-pressed=${this.isTeamStatsShown ? "true" : "false"}
                   >
-                    <img
-                      src=${
-                        this.isTeamStatsShown
-                          ? teamStatsSolidIcon
-                          : teamStatsRegularIcon
-                      }
-                      alt=${
-                        translateText("help_modal.icon_alt_team_leaderboard") ||
-                        "Team Leaderboard Icon"
-                      }
-                      width="20"
-                      height="20"
-                    />
-                  </div>
-                `
-              : null
-          }
-          <div
-            class="cursor-pointer p-0.5 hover:bg-gray-600 border rounded-md transition-colors ${
-              this.alternateView
-                ? "bg-gray-500 border-white"
-                : "bg-gray-700/50 border-slate-500"
-            }"
-            @click=${this.toggleAlternateView}
-            role="button"
-            tabindex="0"
-            aria-pressed=${this.alternateView ? "true" : "false"}
-            title=${translateText("user_setting.toggle_view_desc")}
-            @keydown=${(e: KeyboardEvent) => {
-              // Not space: that's the hold-to-view key, handled globally.
-              if (e.key === "Enter") {
-                e.preventDefault();
-                this.toggleAlternateView();
-              }
-            }}
-          >
-            <img
-              src=${alternateViewIcon}
-              alt=${translateText("user_setting.toggle_view_desc")}
-              width="20"
-              height="20"
-            />
-          </div>
-          ${
-            this.isPlayerStatsShown || this.isTeamStatsShown
-              ? html`<span
-                  class="ml-auto text-[10px] text-slate-500 select-all leading-none self-start"
-                  title=${translateText("help_modal.game_id_tooltip")}
-                  >${this.game?.gameID() ?? ""}</span
-                >`
-              : null
-          }
-        </div>
+                    <span class=${toggleBtn(this.isTeamStatsShown)}>
+                      <img
+                        src=${
+                          this.isTeamStatsShown
+                            ? teamStatsSolidIcon
+                            : teamStatsRegularIcon
+                        }
+                        alt=${
+                          translateText(
+                            "help_modal.icon_alt_team_leaderboard",
+                          ) || "Team Leaderboard Icon"
+                        }
+                        width="20"
+                        height="20"
+                      />
+                    </span>
+                    Tim
+                  </button>
+                  <team-stats
+                    class=${this.isTeamStatsShown ? "block min-w-0" : "hidden"}
+                    .game=${this.game}
+                    .visible=${this.isTeamStatsShown}
+                  ></team-stats>
+                </section>
+              `
+            : null
+        }
         ${
           this.isPlayerTeamLabelVisible
             ? html`
                 <div
-                  class="flex items-center w-full text-white mt-2"
+                  class="flex items-center w-full text-ink text-xs"
                   @contextmenu=${(e: Event) => e.preventDefault()}
                 >
                   ${translateText("help_modal.ui_your_team")}
@@ -253,23 +282,85 @@ export class GameLeftSidebar extends LitElement implements Controller {
               `
             : null
         }
-        <div class="flex flex-col gap-2 min-w-0 w-full">
-          <player-stats
-            class=${this.isPlayerStatsShown ? "block min-w-0" : "hidden"}
-            .game=${this.game}
-            .eventBus=${this.eventBus}
-            .visible=${this.isPlayerStatsShown}
-          ></player-stats>
-          <team-stats
-            class=${
-              this.isTeamStatsShown && this.isTeamGame
-                ? "block min-w-0"
-                : "hidden"
-            }
-            .game=${this.game}
-            .visible=${this.isTeamStatsShown && this.isTeamGame}
-          ></team-stats>
-        </div>
+
+        <!-- DIPLOMASI: current allies, read-only -->
+        <section class="flex flex-col gap-1.5 min-w-0">
+          <h2 class="hud-section-title">Diplomasi</h2>
+          ${
+            this.allies.length === 0
+              ? html`<p class="text-xs text-muted px-1">No allies yet</p>`
+              : html`<ul class="flex flex-col gap-1 px-1">
+                  ${this.allies.map(
+                    (name) => html`
+                      <li
+                        class="flex items-center gap-1.5 text-xs text-ink truncate"
+                        translate="no"
+                      >
+                        <span class="text-teal-accent" aria-hidden="true"
+                          >🤝</span
+                        >
+                        ${name}
+                      </li>
+                    `,
+                  )}
+                </ul>`
+          }
+        </section>
+
+        <!-- PERANG: outgoing attacks, read-only -->
+        <section class="flex flex-col gap-1.5 min-w-0">
+          <h2 class="hud-section-title">Perang</h2>
+          ${
+            this.attacks.length === 0
+              ? html`<p class="text-xs text-muted px-1">No active attacks</p>`
+              : html`<ul class="flex flex-col gap-1 px-1">
+                  ${this.attacks.map(
+                    (attack) => html`
+                      <li
+                        class="flex items-center justify-between gap-2 text-xs text-ink"
+                      >
+                        <span class="truncate" translate="no"
+                          >⚔️ ${attack.name}</span
+                        >
+                        <span class="text-rose-accent font-bold tabular-nums"
+                          >${renderTroops(attack.troops)}</span
+                        >
+                      </li>
+                    `,
+                  )}
+                </ul>`
+          }
+        </section>
+
+        <!-- PENGATURAN: map view toggle + settings modal -->
+        <section class="flex flex-col gap-1.5 min-w-0">
+          <h2 class="hud-section-title">Pengaturan</h2>
+          <button
+            type="button"
+            class="flex items-center gap-2 w-full text-left text-ink text-xs font-semibold px-1 py-1 rounded-md hover:bg-white/5 transition-colors"
+            @click=${this.toggleAlternateView}
+            aria-pressed=${this.alternateView ? "true" : "false"}
+            title=${translateText("user_setting.toggle_view_desc")}
+          >
+            <span class=${toggleBtn(this.alternateView)}>
+              <img
+                src=${alternateViewIcon}
+                alt=${translateText("user_setting.toggle_view_desc")}
+                width="20"
+                height="20"
+              />
+            </span>
+            Tampilan Peta
+          </button>
+          <button
+            type="button"
+            class="flex items-center gap-2 w-full text-left text-ink text-xs font-semibold px-1 py-1 rounded-md hover:bg-white/5 transition-colors"
+            @click=${this.openSettings}
+          >
+            <span class=${toggleBtn(false)}>⚙️</span>
+            Pengaturan
+          </button>
+        </section>
         <slot></slot>
       </aside>
     `;
