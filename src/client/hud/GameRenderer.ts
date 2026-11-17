@@ -33,6 +33,7 @@ import { EmojiTable } from "./layers/EmojiTable";
 import { EventsDisplay } from "./layers/EventsDisplay";
 import { GameLeftSidebar } from "./layers/GameLeftSidebar";
 import { GameRightSidebar } from "./layers/GameRightSidebar";
+import { GameTopBar } from "./layers/GameTopBar";
 import { HeadsUpMessage } from "./layers/HeadsUpMessage";
 import { ImmunityTimer } from "./layers/ImmunityTimer";
 import { InGamePromo } from "./layers/InGamePromo";
@@ -189,6 +190,13 @@ export function createRenderer(
   }
   gameRightSidebar.game = game;
   gameRightSidebar.eventBus = eventBus;
+
+  const gameTopBar = document.querySelector("game-top-bar") as GameTopBar;
+  if (!(gameTopBar instanceof GameTopBar)) {
+    console.error("Game top bar not found");
+  }
+  gameTopBar.game = game;
+  gameTopBar.eventBus = eventBus;
 
   const settingsModal = document.querySelector(
     "settings-modal",
@@ -372,6 +380,7 @@ export function createRenderer(
     gameLeftSidebar,
     unitDisplay,
     gameRightSidebar,
+    gameTopBar,
     controlPanel,
     playerInfo,
     winModal,
