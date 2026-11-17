@@ -358,7 +358,7 @@ export class GameRightSidebar extends LitElement implements Controller {
         @keyframes game-end-timer-text-flash {
           0%,
           100% {
-            color: rgb(248 113 113);
+            color: rgb(251 113 133);
           }
           50% {
             color: white;
@@ -367,14 +367,14 @@ export class GameRightSidebar extends LitElement implements Controller {
         @keyframes game-end-timer-sidebar-flash {
           0%,
           100% {
-            background-color: rgb(0 0 0 / 0.92);
+            background-color: rgb(15 22 38 / 0.94);
           }
           50% {
-            background-color: rgb(185 28 28 / 0.96);
+            background-color: rgb(190 18 60 / 0.96);
           }
         }
         .game-end-timer-last-minute {
-          color: rgb(248 113 113);
+          color: rgb(251 113 133);
         }
         .game-end-timer-flash {
           animation: game-end-timer-text-flash 1s ease-in-out infinite;
@@ -389,18 +389,21 @@ export class GameRightSidebar extends LitElement implements Controller {
           }
           .game-end-timer-sidebar-flash {
             animation: none;
-            background-color: rgb(185 28 28 / 0.96);
+            background-color: rgb(190 18 60 / 0.96);
           }
         }
       </style>
       <aside
-        class=${`w-fit flex flex-row items-center gap-2 sm:gap-3 py-2 px-2 sm:px-3 bg-gray-800/92 backdrop-blur-sm shadow-xs rounded-bl-lg transition-transform duration-300 ease-out transform text-white ${shouldFlashSidebar ? "game-end-timer-sidebar-flash" : ""} ${
+        class=${`hud-panel w-fit flex flex-row items-center gap-2 sm:gap-3 py-2 px-2 sm:px-3 backdrop-blur-sm shadow-xs rounded-bl-lg transition-transform duration-300 ease-out transform text-ink ${shouldFlashSidebar ? "game-end-timer-sidebar-flash" : ""} ${
           this._isVisible ? "translate-x-0" : "translate-x-full"
         }`}
         @contextmenu=${(e: Event) => e.preventDefault()}
       >
         <!-- In-game time -->
-        <div data-game-timer class=${timerClass}>
+        <div
+          data-game-timer
+          class=${`font-bold tabular-nums ${timerClass} ${timerClass === "" ? "text-gold" : ""}`}
+        >
           ${this.secondsToHms(this.timer)}
         </div>
 
