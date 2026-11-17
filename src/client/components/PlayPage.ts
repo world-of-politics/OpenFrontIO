@@ -25,7 +25,7 @@ export class PlayPage extends LitElement {
 
         <!-- Mobile: Fixed top bar -->
         <div
-          class="lg:hidden fixed left-0 right-0 top-[var(--top-ad-height,0px)] z-40 pt-[env(safe-area-inset-top)] bg-surface border-b border-white/10"
+          class="lg:hidden fixed left-0 right-0 top-[var(--top-ad-height,0px)] z-40 pt-[env(safe-area-inset-top)] bg-surface border-b border-gold/25"
         >
           <div
             class="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center h-14 px-2 gap-2"
@@ -95,7 +95,7 @@ export class PlayPage extends LitElement {
 
             <!-- Identity row: username over the currently selected cosmetic background. -->
             <div
-              class="relative bg-surface border-y border-white/10 overflow-visible flex items-center sm:min-h-[60px] sm:compact:min-h-[45px] sm:flex-1 sm:z-20 sm:border-y-0 sm:rounded-xl"
+              class="relative bg-surface border-y border-gold/25 overflow-visible flex items-center sm:min-h-[60px] sm:compact:min-h-[45px] sm:flex-1 sm:z-20 sm:border-y-0 sm:rounded-xl"
             >
               <!-- Selected skin/pattern fills the bubble like the player's territory in game. -->
               <cosmetic-background
