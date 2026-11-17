@@ -355,7 +355,7 @@
   </head>
 
   <body
-    class="select-none font-sans min-h-screen bg-neutral-800 transition-opacity duration-300 ease-in-out flex flex-row flex-wrap content-start"
+    class="select-none font-sans min-h-screen bg-abyss text-ink transition-opacity duration-300 ease-in-out flex flex-row flex-wrap content-start"
   >
     <script>
       // Halloween theme (src/client/halloween.css), Oct 25 through Nov 1 local
@@ -408,7 +408,7 @@
 
     <mobile-nav-bar
       id="sidebar-menu"
-      class="peer [.in-game_&]:hidden z-[40001] fixed left-0 top-0 h-full flex flex-col justify-start overflow-visible bg-black/70 backdrop-blur-xl border-r border-white/10 transition-transform duration-500 ease-out transform -translate-x-full w-[70%] [&.open]:translate-x-0 lg:hidden"
+      class="peer [.in-game_&]:hidden z-[40001] fixed left-0 top-0 h-full flex flex-col justify-start overflow-visible bg-abyss/90 backdrop-blur-xl border-r border-gold/25 transition-transform duration-500 ease-out transform -translate-x-full w-[70%] [&.open]:translate-x-0 lg:hidden"
       role="dialog"
       data-i18n-aria-label="main.menu"
     ></mobile-nav-bar>
@@ -580,7 +580,7 @@
              the edges it touches: left below lg (right instead on landscape
              phones), right below sm, the bottom until it floats from 1200px. -->
         <div
-          class="flex flex-col pointer-events-auto bg-gray-800/92 backdrop-blur-sm side-bar:backdrop-blur-none sm:rounded-tr-lg sm:max-lg:landscape:rounded-tr-none sm:max-lg:landscape:rounded-tl-lg lg:rounded-t-lg min-[1200px]:rounded-lg shadow-lg order-3 sm:order-none z-10 max-[1200px]:-mb-[env(safe-area-inset-bottom)] max-lg:-ml-[env(safe-area-inset-left)] sm:max-lg:landscape:ml-0 max-sm:-mr-[env(safe-area-inset-right)] sm:max-lg:landscape:-mr-[env(safe-area-inset-right)]"
+          class="flex flex-col pointer-events-auto hud-panel sm:rounded-tr-lg sm:max-lg:landscape:rounded-tr-none sm:max-lg:landscape:rounded-tl-lg lg:rounded-t-lg min-[1200px]:rounded-lg shadow-lg order-3 sm:order-none z-10 max-[1200px]:-mb-[env(safe-area-inset-bottom)] max-lg:-ml-[env(safe-area-inset-left)] sm:max-lg:landscape:ml-0 max-sm:-mr-[env(safe-area-inset-right)] sm:max-lg:landscape:-mr-[env(safe-area-inset-right)]"
         >
           <control-panel class="w-full"></control-panel>
           <unit-display
@@ -624,7 +624,7 @@
          so the map and HUD there blurred. This one is all but transparent,
          and above the top HUD so the HUD's backdrop blur isn't picked up. -->
     <div
-      class="hidden in-[.in-game]:block fixed top-0 inset-x-0 z-[1100] h-[calc(env(safe-area-inset-top)+12px)] bg-neutral-800/1 pointer-events-none"
+      class="hidden in-[.in-game]:block fixed top-0 inset-x-0 z-[1100] h-[calc(env(safe-area-inset-top)+12px)] bg-abyss/1 pointer-events-none"
     ></div>
     <!-- Top HUD: below lg each piece is fixed on its own. From lg, where the
          leaderboard opens by default, they share one row, leaderboard | card |
@@ -636,6 +636,11 @@
       <game-left-sidebar
         class="lg:col-start-1 lg:justify-self-start"
       ></game-left-sidebar>
+      <!-- Parlamentum-style dashboard top bar (name, level/XP, resources,
+           game clock). Desktop only; phones keep the bottom control panel. -->
+      <game-top-bar
+        class="hidden lg:block fixed top-0 left-1/2 -translate-x-1/2 pointer-events-none"
+      ></game-top-bar>
       <player-info-overlay
         class="lg:col-start-2 lg:min-w-0"
       ></player-info-overlay>
