@@ -450,7 +450,7 @@ export default defineConfig(({ mode }) => {
       ],
     },
     root: "./",
-    base: "/",
+    base: "/OpenFrontIO/",
     publicDir: isProduction ? false : "resources",
 
     // Vite's JS preload helper (`__vitePreload`, used by dynamic import())
