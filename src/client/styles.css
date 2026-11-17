@@ -22,15 +22,30 @@
 
 @theme {
   --default-ring-width: 3px;
-  --default-ring-color: var(--color-malibu-blue);
+  --default-ring-color: var(--color-gold);
   --font-display: "OpenFront", Inter, Arial, sans-serif;
 
-  /* Openfront.io brand palette — see Openfront_Brand_Guidelines.pdf §4 */
-  --color-malibu-blue: #0084d1;
-  --color-aquarius: #3fa9f5;
+  /* TRY-IT reskin: Parlamentum-style dark-navy + gold dashboard theme.
+     The blue brand tokens below are re-pointed at gold so buttons, links and
+     accents across the lobby + HUD pick the new palette up from one place.
+     The OpenFront name, logo and AGPL notices are untouched. */
+  --color-malibu-blue: #e3b341;
+  --color-aquarius: #f2c96b;
   --color-dawn-blue: #cccccc;
   --color-bright-white: #ffffff;
   --color-bright-blue: #1e90ff;
+
+  /* World of Politics / Parlamentum-like palette */
+  --color-gold: #e3b341;
+  --color-gold-light: #f2c96b;
+  --color-gold-deep: #b98a2b;
+  --color-abyss: #0a0e18;
+  --color-panel: #0f1626;
+  --color-panel-2: #111a2e;
+  --color-ink: #e8ecf3;
+  --color-muted: #8b94a7;
+  --color-teal-accent: #2dd4bf;
+  --color-rose-accent: #fb7185;
 
   /* Openfront Masters sub-brand */
   --color-cyber-yellow: #ffd700;
@@ -42,25 +57,70 @@
   --color-frame-orange: #f97316;
 
   /* App-specific surface colors */
-  --color-surface: #0a1628;
+  --color-surface: #0f1626;
 
-  --shadow-malibu-blue: 0 0 15px rgba(0, 132, 209, 0.2);
-  --shadow-malibu-blue-soft: 0 0 12px rgba(0, 132, 209, 0.2);
-  --shadow-malibu-blue-strong: 0 0 15px rgba(0, 132, 209, 0.3);
-  --shadow-malibu-blue-pill: 0 0 6px rgba(0, 132, 209, 0.35);
-  --shadow-malibu-blue-ring-sm: 0 0 0 4px rgba(0, 132, 209, 0.2);
-  --shadow-malibu-blue-ring-lg: 0 0 0 6px rgba(0, 132, 209, 0.3);
-  --shadow-lobby-card-hover: 0 0 0 2px #0084d1, 0 0 20px rgba(0, 132, 209, 0.5);
+  --shadow-malibu-blue: 0 0 15px rgba(227, 179, 65, 0.2);
+  --shadow-malibu-blue-soft: 0 0 12px rgba(227, 179, 65, 0.2);
+  --shadow-malibu-blue-strong: 0 0 15px rgba(227, 179, 65, 0.3);
+  --shadow-malibu-blue-pill: 0 0 6px rgba(227, 179, 65, 0.35);
+  --shadow-malibu-blue-ring-sm: 0 0 0 4px rgba(227, 179, 65, 0.2);
+  --shadow-malibu-blue-ring-lg: 0 0 0 6px rgba(227, 179, 65, 0.3);
+  --shadow-lobby-card-hover: 0 0 0 2px #e3b341, 0 0 20px rgba(227, 179, 65, 0.5);
   --shadow-action-card-hover:
-    0 0 0 1px #0084d1, 0 0 12px rgba(0, 132, 209, 0.35);
+    0 0 0 1px #e3b341, 0 0 12px rgba(227, 179, 65, 0.35);
+}
+
+/* ---- Parlamentum-style HUD chrome (try-it reskin) ---- */
+
+/* Dark-navy military-dashboard panel: the shared HUD surface. */
+.hud-panel {
+  background-color: rgb(15 22 38 / 0.94);
+  border: 1px solid rgb(227 179 65 / 0.28);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.4);
+  backdrop-filter: blur(4px);
+}
+
+/* Section title: gold diamond marker + uppercase label + thin dashed gold
+   ornament line, Parlamentum-dashboard style. */
+.hud-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  padding-bottom: 0.3rem;
+  border-bottom: 1px dashed rgb(227 179 65 / 0.45);
+}
+
+.hud-section-title::before {
+  content: "◆";
+  font-size: 0.55rem;
+  line-height: 1;
+}
+
+/* Small gold-outlined chip for resource readouts in the HUD. */
+.hud-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1px solid rgb(227 179 65 / 0.45);
+  border-radius: 0.375rem;
+  background: rgb(17 26 46 / 0.8);
+  color: var(--color-gold);
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  white-space: nowrap;
 }
 
 /* Match the in-game HUD surface; opacity affects the surface, not the controls. */
 .graphics-panel-surface {
   background-color: rgb(
-    from var(--color-gray-800) r g b / calc(0.92 * var(--hud-opacity, 1))
+    from var(--color-panel) r g b / calc(0.94 * var(--hud-opacity, 1))
   );
-  border-color: rgb(from var(--color-slate-600) r g b / var(--hud-opacity, 1));
+  border-color: rgb(from var(--color-gold) r g b / calc(0.28 * var(--hud-opacity, 1)));
   backdrop-filter: blur(calc(4px * var(--hud-opacity, 1)));
   box-shadow: 0 8px 24px rgb(0 0 0 / calc(0.25 * var(--hud-opacity, 1)));
 }
@@ -169,19 +229,19 @@ body.in-game {
 
 body.in-game .bg-gray-800\/92:not(.game-end-timer-sidebar-flash) {
   background-color: rgb(
-    from var(--color-gray-800) r g b / calc(0.92 * var(--hud-opacity, 1))
+    from var(--color-panel) r g b / calc(0.94 * var(--hud-opacity, 1))
   );
 }
 
 body.in-game .stats-table .bg-gray-800\/85 {
   background-color: rgb(
-    from var(--color-gray-800) r g b / calc(0.85 * var(--hud-opacity, 1))
+    from var(--color-panel) r g b / calc(0.85 * var(--hud-opacity, 1))
   );
 }
 
 body.in-game .stats-table .bg-gray-700\/95 {
   background-color: rgb(
-    from var(--color-gray-700) r g b / calc(0.95 * var(--hud-opacity, 1))
+    from var(--color-panel-2) r g b / calc(0.95 * var(--hud-opacity, 1))
   );
 }
 
@@ -222,7 +282,7 @@ body.page-open {
 @media (min-width: 1024px) {
   * {
     scrollbar-width: auto;
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    scrollbar-color: rgba(227, 179, 65, 0.35) transparent;
   }
 }
 
@@ -244,7 +304,7 @@ body.page-open {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(227, 179, 65, 0.35);
   border-radius: 4px;
 }
 
@@ -325,8 +385,8 @@ body.page-open {
 }
 
 .option-card.selected {
-  border-color: #4a9eff;
-  background: rgba(74, 158, 255, 0.1);
+  border-color: #e3b341;
+  background: rgba(227, 179, 65, 0.12);
 }
 
 .option-card.disabled {
@@ -377,8 +437,8 @@ label.option-card:hover {
 }
 
 .option-card.selected .checkbox-icon {
-  border-color: #4a9eff;
-  background: #4a9eff;
+  border-color: #e3b341;
+  background: #e3b341;
 }
 
 .option-card.selected .checkbox-icon::after {
@@ -482,14 +542,14 @@ label.option-card:hover {
 #bots-count::-moz-range-progress,
 #private-lobby-bots-count::-moz-range-progress {
   height: 8px;
-  background-color: #0075ff;
+  background-color: #e3b341;
 }
 
 #bots-count::-moz-range-thumb,
 #private-lobby-bots-count::-moz-range-thumb {
   height: 16px;
   width: 16px;
-  background: #0075ff;
+  background: #e3b341;
   border: none;
   border-radius: 50%;
 }
@@ -500,7 +560,7 @@ label.option-card:hover {
   height: 8px;
   background: linear-gradient(
     to right,
-    #0075ff var(--progress, 0%),
+    #e3b341 var(--progress, 0%),
     white var(--progress, 0%)
   );
 }
@@ -510,7 +570,7 @@ label.option-card:hover {
   -webkit-appearance: none;
   height: 16px;
   width: 16px;
-  background: #0075ff;
+  background: #e3b341;
   border: none;
   border-radius: 50%;
   margin-top: -4px;
@@ -522,8 +582,8 @@ label.option-card:hover {
 }
 
 .random-map.selected {
-  border: 2px solid #4a9eff;
-  background: rgba(74, 158, 255, 0.1);
+  border: 2px solid #e3b341;
+  background: rgba(227, 179, 65, 0.12);
 }
 
 #helpModal table {
@@ -929,8 +989,8 @@ unit-display .tutorial-highlight::after {
   height: 1.25rem;
   background: linear-gradient(
     to bottom,
-    rgb(31 41 55 / 0.92),
-    rgb(31 41 55 / 0)
+    rgb(15 22 38 / 0.94),
+    rgb(15 22 38 / 0)
   );
 }
 
@@ -939,7 +999,7 @@ unit-display .tutorial-highlight::after {
   right: 0;
   bottom: 0;
   height: 1.25rem;
-  background: linear-gradient(to top, rgb(31 41 55 / 0.92), rgb(31 41 55 / 0));
+  background: linear-gradient(to top, rgb(15 22 38 / 0.94), rgb(15 22 38 / 0));
 }
 
 @media (width >= 64rem), (orientation: landscape) {
@@ -955,8 +1015,8 @@ unit-display .tutorial-highlight::after {
     right: auto;
     background: linear-gradient(
       to right,
-      rgb(31 41 55 / 0.92),
-      rgb(31 41 55 / 0)
+      rgb(15 22 38 / 0.94),
+      rgb(15 22 38 / 0)
     );
   }
 
@@ -964,8 +1024,8 @@ unit-display .tutorial-highlight::after {
     left: auto;
     background: linear-gradient(
       to left,
-      rgb(31 41 55 / 0.92),
-      rgb(31 41 55 / 0)
+      rgb(15 22 38 / 0.94),
+      rgb(15 22 38 / 0)
     );
   }
 }
